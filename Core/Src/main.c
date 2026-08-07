@@ -89,7 +89,7 @@ int main(void)
   MX_GPIO_Init();
   MX_CAN1_Init();
   /* USER CODE BEGIN 2 */
-  void Can_Init();
+  Can_Init();
   /* USER CODE END 2 */
 
   /* Infinite loop */
