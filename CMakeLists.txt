@@ -53,6 +53,7 @@ include_directories(Core/Inc Drivers/STM32F4xx_HAL_Driver/Inc Drivers/STM32F4xx_
 include_directories(User/CAN)
 
 add_definitions(-DDEBUG -DUSE_HAL_DRIVER -DSTM32F407xx)
+set(LINKER_SCRIPT "${CMAKE_SOURCE_DIR}/STM32F407IGHX_FLASH.ld")#我需要锁定这个芯片才可以
 
 file(GLOB_RECURSE SOURCES "Core/*.*" "Drivers/*.*" "User/*.*")
 
