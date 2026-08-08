@@ -67,6 +67,6 @@ void Can_Receive(){
     }
 }
 
-void HAL_CAN_RxFifoOMsgPendingCallback(CAN_HandleTypeDef *hcan) {
+void HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef *hcan) {
     Can_Receive();//类似于串口那个callback
 }
