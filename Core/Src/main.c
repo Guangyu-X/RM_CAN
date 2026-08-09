@@ -97,7 +97,7 @@ int main(void)
   while (1)
   {
     /* USER CODE END WHILE */
-    Can_Send(0X1FF,0,1000,0,0);
+    Can_Send(0X1FE,0,1000,0,0);
     HAL_Delay(2);
     /* USER CODE BEGIN 3 */
   }
