@@ -26,7 +26,8 @@ void Gimbalc::Command_Send(){
  * 获得yaw和pitch的目标值
  */
 void Gimbalc::Get_Target(){
-    Can_Receive();//直接这样读取吗（挠头）
+    Yaw_Target = 20.0f;
+    Pitch_Target = 10.0f;;//先写死吧（）
 }
 
 void Gimbalc::Protect(){
