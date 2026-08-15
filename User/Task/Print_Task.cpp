@@ -16,8 +16,8 @@ void Print_Task(void const * argument)
     for(;;)
     {
         CurrentTime = xTaskGetTickCount();
-        usart_printf("Hello RoboMaster\r\n");
-        vTaskDelayUntil(&CurrentTime, 20 / portTICK_RATE_MS);//每20ms执行一次
+        usart_printf("RM2027\r\n");
+        vTaskDelayUntil(&CurrentTime, 20 / portTICK_RATE_MS);//50Hz
     }
     /* USER CODE END Print_Task */
 }

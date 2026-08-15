@@ -15,6 +15,6 @@ void Gimbal_Task(void const * argument)
         CurrentTime = xTaskGetTickCount();//读取当前时间下tick
         Gimbal.Loop();//执行云台控制环
         Feed_Dog();//喂狗
-        vTaskDelayUntil(&CurrentTime, 4 / portTICK_RATE_MS); //每4ms执行一次，将程序阻塞至CurrentTime+4ms
+        vTaskDelayUntil(&CurrentTime, 2 / portTICK_RATE_MS); //500Hz
     }
 }
