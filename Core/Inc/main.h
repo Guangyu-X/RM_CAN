@@ -53,7 +53,10 @@ extern "C" {
 void Error_Handler(void);
 
 /* USER CODE BEGIN EFP */
-
+  void main_Init();
+  void RTOS_Init();
+  void Gimbal_Task(void const * argument);
+  void Print_Task(void const * argument);
 /* USER CODE END EFP */
 
 /* Private defines -----------------------------------------------------------*/
