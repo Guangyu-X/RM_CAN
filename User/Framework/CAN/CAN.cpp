@@ -55,8 +55,6 @@ void Can_Send(int16_t ID,int16_t Mess_1,int16_t Mess_2,int16_t Mess_3,int16_t Me
               Mess_3,
               Mess_4,
               tx_status);
-    } else {
-        //usart_printf("Tx OK: ID=0x%X, Val=%d\n", ID, Mess_1); // 调试时可以短暂打开看一眼发送的数值
     }
 }
 
