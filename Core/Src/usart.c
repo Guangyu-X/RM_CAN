@@ -21,7 +21,9 @@
 #include "usart.h"
 
 /* USER CODE BEGIN 0 */
-
+#define RX_BUF_SIZE 64
+uint8_t vofa_rx_str_buf[RX_BUF_SIZE];
+extern void Vofa_Data_Process_C(uint8_t *rx_buf, uint16_t size);
 /* USER CODE END 0 */
 
 UART_HandleTypeDef huart1;
@@ -53,7 +55,9 @@ void MX_USART1_UART_Init(void)
     Error_Handler();
   }
   /* USER CODE BEGIN USART1_Init 2 */
-
+  // 启动串口 DMA 空闲中断接收
+  HAL_UARTEx_ReceiveToIdle_DMA(&huart1, vofa_rx_str_buf, RX_BUF_SIZE);
+  __HAL_DMA_DISABLE_IT(&hdma_usart1_rx, DMA_IT_HT); // 关闭半传输中断
   /* USER CODE END USART1_Init 2 */
 
 }
@@ -162,6 +166,14 @@ void HAL_UART_MspDeInit(UART_HandleTypeDef* uartHandle)
 }
 
 /* USER CODE BEGIN 1 */
-
+// 串口 DMA 接收空闲中断回调
+void HAL_UARTEx_RxEventCallback(UART_HandleTypeDef *huart, uint16_t Size) {
+  if (huart->Instance == USART1) {
+    // 调用 C 桥接函数把数据送给 C++ 的 Remote 对象
+    Vofa_Data_Process_C(vofa_rx_str_buf, Size);
+    HAL_UARTEx_ReceiveToIdle_DMA(&huart1, vofa_rx_str_buf, RX_BUF_SIZE);
+    __HAL_DMA_DISABLE_IT(&hdma_usart1_rx, DMA_IT_HT);
+  }
+}
 /* USER CODE END 1 */
 

@@ -4,6 +4,7 @@
 
 #include "CAN.hpp"
 
+#include "Debug.hpp"
 #include "Gimbal.hpp"
 
 uint8_t rx_buf[8];
@@ -45,7 +46,18 @@ void Can_Send(int16_t ID,int16_t Mess_1,int16_t Mess_2,int16_t Mess_3,int16_t Me
     can_send_message[6] = Mess_4 >> 8;
     can_send_message[7] = Mess_4;
 
-    HAL_CAN_AddTxMessage(&hcan1, &Tx_Message, can_send_message, &Send_Mail_Box);
+    HAL_StatusTypeDef tx_status = HAL_CAN_AddTxMessage(&hcan1, &Tx_Message, can_send_message, &Send_Mail_Box);
+    if (tx_status != HAL_OK) {
+        usart_printf("TX ID=0x%03X M1=%d M2=%d M3=%d M4=%d status=%d\r\n",
+              ID,
+              Mess_1,
+              Mess_2,
+              Mess_3,
+              Mess_4,
+              tx_status);
+    } else {
+        //usart_printf("Tx OK: ID=0x%X, Val=%d\n", ID, Mess_1); // 调试时可以短暂打开看一眼发送的数值
+    }
 }
 
 void Can_Receive(){
@@ -77,9 +89,11 @@ void Can_Receive(){
 void HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef *hcan) {
     Can_Receive();//类似于串口那个callback
     if (Yaw_Data.Temperature > 80 || Pitch_Data.Temperature > 80
-        || Yaw_Data.Angle > 80 || Pitch_Data.Angle > 80  //随便给的值来的
-        || Yaw_Data.Speed > 500 || Pitch_Data.Speed > 500) {
+    ||std::abs((int)Yaw_Data.Speed) > 8000 ||std::abs((int)Pitch_Data.Speed) > 8000) // 绝对值
+        {
         Gimbal.Gimbal_Status = false;
+    } else {
+        Gimbal.Gimbal_Status = true;
     }
 }
 

@@ -2,6 +2,7 @@
 // Created by 42038 on 2026/8/15.
 //
 #include "Gimbal.hpp"
+#include "Remote.hpp"
 
 Gimbalc Gimbal;
 
@@ -9,8 +10,10 @@ Gimbalc Gimbal;
  * @brief 初始化云台，包括设置yaw和pitch的角度软件限位
  */
 void Gimbalc::Init() {
-    Yaw.Init(-90.0f,90.0f);
-    Pitch.Init(-15.0f,45.0f);
+    Yaw.Init(-180.0f,180.0f);
+    Pitch.Init(-180.0f,180.0f);
+    Yaw.Set_Zero_Offset(4096.0f);
+    Pitch.Set_Zero_Offset(4096.0f);
 }
 
 /*
@@ -19,20 +22,37 @@ void Gimbalc::Init() {
  * 电流模式
  */
 void Gimbalc::Command_Send(){
-    Can_Send(COMMAND_ID,Yaw.Command_Send(),Pitch.Command_Send(),0,0);
+    Can_Send(COMMAND_ID,Pitch.Command_Send(),Yaw.Command_Send(),0,0);
 }
 
 /*
  * 获得yaw和pitch的目标值
  */
-void Gimbalc::Get_Target(){
-    Yaw_Target = 20.0f;
-    Pitch_Target = 10.0f;;//先写死吧（）
-}
+void Gimbalc::Get_Target() {
+    Yaw_Target = Remote.Yaw_Target_Vofa;
+    Pitch_Target = Remote.Pitch_Target_Vofa;
+    // 根据上位机传来的模式编号，动态设置 Yaw 电机的工作模式
+    switch (Remote.Mode_Vofa) {
+        case 0:
+        {Yaw.Set_Mode(MOTOR_PROTECT);
+            Pitch.Set_Mode(MOTOR_PROTECT);
+            break;}
 
-void Gimbalc::Protect(){
-    Yaw.Protect();
-    Pitch.Protect();
+        case 1:
+        {Yaw.Set_Mode(MOTOR_SPEED);
+            Pitch.Set_Mode(MOTOR_SPEED);
+            break;}
+
+        case 2:
+        {Yaw.Set_Mode(MOTOR_POSITION);
+            Pitch.Set_Mode(MOTOR_POSITION);
+            break;}
+
+        default:
+        {Yaw.Set_Mode(MOTOR_PROTECT);
+            Pitch.Set_Mode(MOTOR_PROTECT);
+            break;}
+    }
 }
 
 
@@ -42,13 +62,20 @@ void Gimbalc::Protect(){
  * 保护模式添加到CAN通信回调函数那里
  */
 void Gimbalc::Loop() {
-    if(Gimbal_Status){  //默认true，云台正常工作
-        Get_Target();
+    if(Gimbal_Status){  // 默认true，云台正常工作
+        Get_Target();     // 这里面会更新目标值并切换模式
         Yaw.Loop(Yaw_Target);
         Pitch.Loop(Pitch_Target);
     }
-    else{//过热，超限位的时候给false，在回调函数赋值
+    else{
         Protect();
     }
     Command_Send();
+}
+/*
+ * 云台保护函数：当失能、过热或超限位时调用
+ */
+void Gimbalc::Protect(){
+    Yaw.Protect();
+    Pitch.Protect();
 }

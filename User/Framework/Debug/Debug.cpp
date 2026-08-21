@@ -13,5 +13,5 @@ void usart_printf(const char *format, ...)
     va_start(args, format);
     length = vsnprintf((char *)send_buf, TX_BUF_SIZE, (const char *)format, args);
     va_end(args);
-    HAL_UART_Transmit_DMA(&huart1, (uint8_t *)send_buf,length);
+    HAL_UART_Transmit(&huart1, (uint8_t *)send_buf, length, HAL_MAX_DELAY);
 }

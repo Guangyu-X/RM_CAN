@@ -109,9 +109,15 @@ void PIDc::PID_Clear(){
     SpdParam.PID_Err_all = 0.0f;
     SpdParam.PID_Err_last = 0.0f;
     SpdParam.PID_Out = 0.0f;
+    SpdParam.PID_lastout = 0.0f;
+    SpdParam.PID_Target = 0.0f;
+    SpdParam.PID_Input = 0.0f;
 
     PosParam.PID_Err_now = 0.0f;
     PosParam.PID_Err_all = 0.0f;
     PosParam.PID_Err_last = 0.0f;
     PosParam.PID_Out = 0.0f;
+    PosParam.PID_lastout = 0.0f;
+    PosParam.PID_Target = 0.0f;
+    PosParam.PID_Input = 0.0f;
 }

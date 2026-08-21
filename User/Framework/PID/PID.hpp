@@ -32,10 +32,10 @@ typedef struct {
 } PID_t;
 
 class PIDc {
-private:
+public:
     void PID_Update(PID_t *WhichPID,float NowInput,float Target);
     float PID_Calculate(PID_t *WhichPID);
-public:
+
     void PID_Init(PID_t *WhichPID,float Kp,float Ki,float Kd);
     float Pos_Spd_PID(PID_t *SpdParam,PID_t *PosParam,float Pos_Input,float Pos_Target,float Spd_Input);
     float SingleLoop_PID(PID_t *Which_PID, float Pos_Input, float Pos_Target);
